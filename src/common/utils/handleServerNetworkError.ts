@@ -1,14 +1,8 @@
-import { setAppErrorAC, setAppStatusAC } from "@/app/app-slice"
-import type { Dispatch } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
-import * as z from "zod";
+import { z } from "zod"
 
-export const handleServerNetworkError = (dispatch: Dispatch, error: unknown) => {
-  let errorMessage
-
-  // switch (error) {
-  //   case
-  // }
+export const handleServerNetworkError = (error: unknown): string => {
+  let errorMessage: string;
 
   switch (true) {
     // 1. Самая специфичная: Axios Error
@@ -20,7 +14,8 @@ export const handleServerNetworkError = (dispatch: Dispatch, error: unknown) => 
     // 2. Специфичная: Zod Error
     case error instanceof z.ZodError:
       const zodError = error as z.ZodError;
-      errorMessage = `Validation error: ${zodError.issues.map(e => e.message).join('; ')}`;
+      errorMessage = `Zod error: look at console`;
+      console.log(zodError.issues)
       break;
 
     // 3. Общая: Native Error
@@ -38,6 +33,5 @@ export const handleServerNetworkError = (dispatch: Dispatch, error: unknown) => 
       break;
   }
 
-  dispatch(setAppErrorAC({ error: errorMessage }))
-  dispatch(setAppStatusAC({ status: "failed" }))
+  return errorMessage;
 }
