@@ -21,13 +21,12 @@ export const Login = () => {
   const theme = getTheme(themeMode)
 
   const {
-    register,
     reset,
     handleSubmit,
     control,
     formState: { errors },
   } = useForm<LoginInputs>({
-    defaultValues: { email: "dont-give-up@gmail.com", password: "123456", rememberMe: false },
+    defaultValues: { email: "dont-give-up@gmail.com", password: "123456", rememberMe: true },
     resolver: zodResolver(loginSchema)
   })
 
@@ -61,15 +60,14 @@ export const Login = () => {
         </FormLabel>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
-            <TextField
-              label="Email"
-              margin="normal"
-              error={!!errors.email}
-              {...register("email")}
-            />
+            <Controller name={'email'} control={control} render={({field}) => (
+               <TextField label={'Email'} margin={'normal'} {...field}/>
+            )}/>
             {errors.email && <span className={style.errorMessage}>{errors.email.message}</span>}
-            <TextField type="password" label="Password" margin="normal" error={!!errors.email} {...register("password")} />
-            {errors.email && <span className={style.errorMessage}>{errors.email.message}</span>}
+            <Controller name={'password'} control={control} render={({ field }) => (
+              <TextField label={'Password'} {...field}/>
+            )}/>
+            {errors.password && <span className={style.errorMessage}>{errors.password.message}</span>}
             <FormControlLabel label="Remember me" control={<Controller
               name="rememberMe"
               control={control}
@@ -80,6 +78,7 @@ export const Login = () => {
                 />
               )}
             />} />
+            <Checkbox defaultChecked={true} />
             <Button type="submit" variant="contained" color="primary">
               Login
             </Button>
