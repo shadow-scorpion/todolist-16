@@ -17,11 +17,9 @@ export const baseResponseSchema = <T extends z.ZodTypeAny>(schema: T) => (
   })
 )
 
-export type BaseResponse = z.infer<typeof baseResponseSchema>
-
 export const defaultResponseSchema = baseResponseSchema(z.object({}))
 
-export type DefaultResponseSchema = z.infer<typeof defaultResponseSchema>
+export type DefaultResponse = z.infer<typeof defaultResponseSchema>
 
 export type RequestStatus = "idle" | "loading" | "succeeded" | "failed"
 

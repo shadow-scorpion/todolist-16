@@ -3,8 +3,14 @@ import type { RootState } from "@/app/store"
 import { ResultCode } from "@/common/enums"
 import { createAppSlice, handleServerAppError, handleServerNetworkError } from "@/common/utils"
 import { tasksApi } from "@/features/todolists/api/tasksApi"
-import { DomainTask, domainTaskSchema, UpdateTaskModel } from "@/features/todolists/api/tasksApi.types"
+import {
+  DomainTask,
+  getTasksResponse,
+  taskPutPostResponse,
+  UpdateTaskModel,
+} from "@/features/todolists/api/tasksApi.types"
 import { createTodolistTC, deleteTodolistTC } from "./todolists-slice"
+import { defaultResponseSchema } from "@/common/types"
 
 export const tasksSlice = createAppSlice({
   name: "tasks",
@@ -28,7 +34,7 @@ export const tasksSlice = createAppSlice({
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await tasksApi.getTasks(todolistId)
           dispatch(setAppStatusAC({ status: "succeeded" }))
-          const data = domainTaskSchema.array().parse(res.data.items)
+          getTasksResponse.parse(res.data)
           return { todolistId, tasks: res.data.items }
         } catch (error) {
           handleServerNetworkError(dispatch, error)
@@ -46,8 +52,9 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await tasksApi.createTask(payload)
-          if (res.data.resultCode === ResultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
+          taskPutPostResponse.parse(res.data)
+          if (res.data.resultCode === ResultCode.Success) {
             return { task: res.data.data.item }
           } else {
             handleServerAppError(res.data, dispatch)
@@ -69,8 +76,9 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await tasksApi.deleteTask(payload)
-          if (res.data.resultCode === ResultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
+          defaultResponseSchema.parse(res.data)
+          if (res.data.resultCode === ResultCode.Success) {
             return payload
           } else {
             handleServerAppError(res.data, dispatch)
@@ -118,8 +126,9 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await tasksApi.updateTask({ todolistId, taskId, model })
-          if (res.data.resultCode === ResultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
+          taskPutPostResponse.parse(res.data)
+          if (res.data.resultCode === ResultCode.Success) {
             return { task: res.data.data.item }
           } else {
             handleServerAppError(res.data, dispatch)

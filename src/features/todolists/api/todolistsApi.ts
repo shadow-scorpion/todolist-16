@@ -1,5 +1,5 @@
 import { instance } from "@/common/instance"
-import { DefaultResponseSchema } from "@/common/types"
+import { DefaultResponse } from "@/common/types"
 import { CreateTodolistResponse, Todolist } from "./todolistsApi.types"
 
 export const todolistsApi = {
@@ -8,12 +8,12 @@ export const todolistsApi = {
   },
   changeTodolistTitle(payload: { id: string; title: string }) {
     const { id, title } = payload
-    return instance.put<DefaultResponseSchema>(`/todo-lists/${id}`, { title })
+    return instance.put<DefaultResponse>(`/todo-lists/${id}`, { title })
   },
   createTodolist(title: string) {
     return instance.post<CreateTodolistResponse>("/todo-lists", { title })
   },
   deleteTodolist(id: string) {
-    return instance.delete<DefaultResponseSchema>(`/todo-lists/${id}`)
+    return instance.delete<DefaultResponse>(`/todo-lists/${id}`)
   },
 }
