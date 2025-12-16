@@ -13,6 +13,7 @@ import { Controller, useForm } from "react-hook-form"
 import style from "/src/features/auth/ui/Login/Login.module.css"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoginInputs, loginSchema } from "@/features/auth/lib/schemas/loginSchema.ts"
+import { PolimorfButton } from "@/common/components/PolimorfButton"
 
 
 export const Login = () => {
@@ -57,6 +58,7 @@ export const Login = () => {
           <p>
             <b>Password:</b> free
           </p>
+          <PolimorfButton as='a' href={'/#'}>Link!</PolimorfButton>
         </FormLabel>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>

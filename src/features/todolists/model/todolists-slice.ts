@@ -3,7 +3,9 @@ import { ResultCode } from "@/common/enums"
 import type { RequestStatus } from "@/common/types"
 import { createAppSlice, handleServerAppError, handleServerNetworkError } from "@/common/utils"
 import { todolistsApi } from "@/features/todolists/api/todolistsApi"
-import type { Todolist } from "@/features/todolists/api/todolistsApi.types"
+import { Todolist, todolistSchema } from "@/features/todolists/api/todolistsApi.types"
+import * as z from "zod";
+
 
 export const todolistsSlice = createAppSlice({
   name: "todolists",
@@ -18,6 +20,7 @@ export const todolistsSlice = createAppSlice({
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await todolistsApi.getTodolists()
           dispatch(setAppStatusAC({ status: "succeeded" }))
+          todolistSchema.array().parse(res.data)
           return { todolists: res.data }
         } catch (error) {
           handleServerNetworkError(dispatch, error)

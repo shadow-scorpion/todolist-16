@@ -1,0 +1,1 @@
+export { PolimorfButton } from './PolimorfButton.tsx'

@@ -10,3 +10,9 @@
     margin: 0;
     text-transform: uppercase;
 }
+
+.btn {
+    text-align: center;
+    font-size: 50px;
+    margin: 0;
+}
