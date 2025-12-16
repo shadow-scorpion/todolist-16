@@ -1,11 +1,9 @@
 import { setAppStatusAC } from "@/app/app-slice"
 import { ResultCode } from "@/common/enums"
-import type { RequestStatus } from "@/common/types"
+import { defaultResponseSchema, RequestStatus } from "@/common/types"
 import { createAppSlice, handleServerAppError, handleServerNetworkError } from "@/common/utils"
 import { todolistsApi } from "@/features/todolists/api/todolistsApi"
-import { Todolist, todolistSchema } from "@/features/todolists/api/todolistsApi.types"
-import * as z from "zod";
-
+import { createTodolistResponse, Todolist, todolistSchema } from "@/features/todolists/api/todolistsApi.types"
 
 export const todolistsSlice = createAppSlice({
   name: "todolists",
@@ -40,8 +38,9 @@ export const todolistsSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await todolistsApi.createTodolist(title)
+          dispatch(setAppStatusAC({ status: "succeeded" }))
+          createTodolistResponse.parse(res.data)
           if (res.data.resultCode === ResultCode.Success) {
-            dispatch(setAppStatusAC({ status: "succeeded" }))
             return { todolist: res.data.data.item }
           } else {
             handleServerAppError(res.data, dispatch)
@@ -64,8 +63,9 @@ export const todolistsSlice = createAppSlice({
           dispatch(setAppStatusAC({ status: "loading" }))
           dispatch(changeTodolistStatusAC({ id, entityStatus: "loading" }))
           const res = await todolistsApi.deleteTodolist(id)
+          dispatch(setAppStatusAC({ status: "succeeded" }))
+          defaultResponseSchema.parse(res.data)
           if (res.data.resultCode === ResultCode.Success) {
-            dispatch(setAppStatusAC({ status: "succeeded" }))
             return { id }
           } else {
             dispatch(changeTodolistStatusAC({ id, entityStatus: "failed" }))
@@ -92,8 +92,9 @@ export const todolistsSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await todolistsApi.changeTodolistTitle(payload)
+          dispatch(setAppStatusAC({ status: "succeeded" }))
+          defaultResponseSchema.parse(res.data)
           if (res.data.resultCode === ResultCode.Success) {
-            dispatch(setAppStatusAC({ status: "succeeded" }))
             return payload
           } else {
             handleServerAppError(res.data, dispatch)
